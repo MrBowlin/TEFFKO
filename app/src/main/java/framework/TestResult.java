@@ -4,27 +4,38 @@ import java.util.ArrayList;
 
 public class TestResult {
     protected ArrayList<String> errorList = new ArrayList<>();
+    protected ArrayList<String> failureList = new ArrayList<>();
     protected int errors = 0;
     protected int successes = 0;
+    protected int failures = 0;
 
-    public void addError(String message) {
-        errorList.add(message);
+    protected void addError(String message, String method) {
+        errorList.add("At function '" + method + "': " + message);
         errors++;
     }
 
-    public void addSuccess() {
+    protected void addFailure(String message, String method) {
+        errorList.add("At function '" + method + "': " + message);
+        failures++;
+    }
+
+    protected void addSuccess() {
         successes++;
     }
 
-    public int errorCount() {
+    protected int errorCount() {
         return errors;
     }
 
-    public int successCount() {
+    protected int failureCount() {
+        return failures;
+    }
+
+    protected int successCount() {
         return successes;
     }
 
-    public int runCount() {
+    protected int runCount() {
         return errors + successes;
     }
 }

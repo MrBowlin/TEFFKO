@@ -23,6 +23,9 @@ dependencies {
 
     // This dependency is used by the application.
     implementation(libs.guava)
+
+    // Source: https://mvnrepository.com/artifact/io.calimero/calimero-core
+    implementation("io.calimero:calimero-core:3.0-M1")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
