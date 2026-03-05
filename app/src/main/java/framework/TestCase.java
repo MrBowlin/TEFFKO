@@ -31,6 +31,14 @@ public abstract class TestCase implements Test, TestFixture {
         
     }
 
+    protected void pause(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            System.err.println("Failed to wait: "+ e.getMessage());
+        }
+    }
+
     protected void assertTrue(boolean condition, String message) {
         try {
             if (condition) {
