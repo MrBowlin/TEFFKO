@@ -66,6 +66,12 @@ public final class EventInfo {
         return stringBuilder.toString();
     }
 
+    public static void printTemplate(String functionName) {
+        System.out.println("=================== Bus Monitor ======================");
+        System.out.println("For function: " + functionName);
+        System.out.println(String.format("%-29s : Service  : SourceAddress : DestinationAddress : %-19s : Info", "Time", "Type"));
+    }
+
     public static void printTemplate() {
         System.out.println("=================== Bus Monitor ======================");
         System.out.println(String.format("%-29s : Service  : SourceAddress : DestinationAddress : %-19s : Info", "Time", "Type"));

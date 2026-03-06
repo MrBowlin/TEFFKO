@@ -1,7 +1,6 @@
 package framework;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 
 import io.calimero.GroupAddress;
 import io.calimero.KNXException;
@@ -48,12 +47,12 @@ public class BusConnector {
         }
     }
 
-    public ArrayList<EventInfo> getMessageBuffer() {
+    public EventBuffer getMessageBuffer() {
         if (this.busListener != null) {
             return busListener.getBuffer();
         } else {
             System.err.println("Could not retrieve Buffer, BusListener is null.");
-            return new ArrayList<>();
+            return new EventBuffer();
         }
     }
 

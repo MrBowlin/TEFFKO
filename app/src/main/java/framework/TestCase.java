@@ -3,8 +3,8 @@ package framework;
 import java.lang.reflect.Method;
 
 public abstract class TestCase implements Test, TestFixture {
-    private TestResult testResult;
-    private String lastMethodCalled = "";
+    protected TestResult testResult;
+    protected String lastMethodCalled = "";
 
     @Override
     public void run(TestResult testResult) {
@@ -75,9 +75,9 @@ public abstract class TestCase implements Test, TestFixture {
         assertTrue(expected.equals(actual), "Expected '" + expected + "' but got '" + actual + "' instead.");
     }
     
-    protected void assertValue(Byte[] expected, Byte[] actual) {
+    protected void assertValue(byte[] expected, byte[] actual) {
         for (int i=0; i<actual.length; i++) {
-            assertTrue(expected[i].compareTo(actual[i]) == 0, "Expected " + expected[i] + " but got " + actual[i] + " instead in ByteArray at position " + i + ".");
+            assertTrue(expected[i] == actual[i], "Expected " + expected[i] + " but got " + actual[i] + " instead in ByteArray at position " + i + ".");
         }
     }
 }

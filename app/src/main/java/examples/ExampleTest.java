@@ -1,8 +1,11 @@
-package framework;
+package examples;
 
-import java.util.ArrayList;
+import framework.BusConnector;
+import framework.EventBuffer;
+import framework.TestCase;
+import framework.UnitTest;
 
-public class Example extends TestCase{
+public class ExampleTest extends TestCase{
 
     @UnitTest
     public void testfun() {
@@ -12,11 +15,8 @@ public class Example extends TestCase{
         connector.readBoolean("0/0/5");
         pause(1000);
         connector.stopListener();
-        ArrayList<EventInfo> buffer = connector.getMessageBuffer();
+        EventBuffer buffer = connector.getMessageBuffer();
         connector.closeConnection();
-        EventInfo.printTemplate();
-        for (EventInfo event : buffer) {
-            System.out.println(event);
-        }
+        buffer.print();
     }
 }

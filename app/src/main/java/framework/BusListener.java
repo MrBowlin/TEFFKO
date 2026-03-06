@@ -1,19 +1,17 @@
 package framework;
 
-import java.util.ArrayList;
-
 import io.calimero.DetachEvent;
 import io.calimero.process.ProcessEvent;
 import io.calimero.process.ProcessListener;
 
 public class BusListener implements ProcessListener {
-    final private ArrayList<EventInfo> responseBuffer = new ArrayList<>();
+    final private EventBuffer responseBuffer = new EventBuffer();
 
     public void clearBuffer() {
         responseBuffer.clear();
     }
 
-    public ArrayList<EventInfo> getBuffer() {
+    public EventBuffer getBuffer() {
         return responseBuffer;
     }
 

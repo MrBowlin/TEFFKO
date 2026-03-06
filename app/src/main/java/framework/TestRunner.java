@@ -33,11 +33,6 @@ public class TestRunner {
         System.out.println(ANSI_BOLD + "================== End of Test =======================" + ANSI_RESET);
     }
 
-    public static void main(String[] args) {
-        TestRunner testRunner = new TestRunner();
-        testRunner.run(new Example());
-    }
-
     public static final String ANSI_RESET       = "\u001B[0m";
     public static final String ANSI_BOLD        = "\u001B[1m";
     public static final String ANSI_UNDERSCORE  = "\u001B[4m";
