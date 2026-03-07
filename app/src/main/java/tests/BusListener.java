@@ -1,50 +1,59 @@
-package framework;
+package tests;
 
 import io.calimero.DetachEvent;
+import io.calimero.GroupAddress;
 import io.calimero.process.ProcessEvent;
 import io.calimero.process.ProcessListener;
 
 public class BusListener implements ProcessListener {
-    final private EventBuffer responseBuffer = new EventBuffer();
 
-    public void clearBuffer() {
-        responseBuffer.clear();
-    }
+    private EventInfo event;
 
-    public EventBuffer getBuffer() {
-        return responseBuffer;
-    }
+    public EventInfo awaitMessage(GroupAddress address, long timeout) throws InterruptedException {
+        event = null;
+        long startTime = System.currentTimeMillis();
+        long currentTime = startTime;
+        while (timeout > currentTime - startTime || event == null) {
+            Thread.sleep(500);
+            currentTime = System.currentTimeMillis();
+        }
+        if (event != null) {
+            return this.event;
+        } else {
+            return new EventInfo("Timout of " + timeout + " reached, no message received for GroupAddress " + address.toString());
+        }
+    }       
 
-	@Override
+    @Override
 	public void groupWrite(final ProcessEvent e) { 
-        responseBuffer.add(new EventInfo(
+        event = new EventInfo(
         "INCOMING",
         "WRITE.INDICATION",
         e.getSourceAddr().toString(),
         e.getDestination().toString(),
         e.getASDU()
-    )); }
+    ); }
 
 	@Override
 	public void groupReadRequest(final ProcessEvent e) { 
-        responseBuffer.add(new EventInfo(
+        event = new EventInfo(
         "INCOMING",
         "READ.REQUEST",
         e.getSourceAddr().toString(),
         e.getDestination().toString(),
         e.getASDU()
-    )); }
+    ); }
 
 	@Override
 	public void groupReadResponse(final ProcessEvent e) { 
-        responseBuffer.add(new EventInfo(
+        event = new EventInfo(
         "INCOMING",
         "READ.RESPONSE",
         e.getSourceAddr().toString(),
         e.getDestination().toString(),
         e.getASDU()
-    )); }
+    ); }
 
-	@Override
+    @Override
 	public void detached(final DetachEvent e) {}
 }

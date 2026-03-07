@@ -1,15 +1,18 @@
-package framework;
+package tests;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HexFormat;
 
 public final class EventInfo {
+    public final boolean isValid;
     public final String direction;
     public final String eventType;
     public final LocalDateTime timestamp;
     public final byte[] data;
     public final String destinationAddress;
     public final String sourceAddress;
+    public final String errorMessage;
 
     public EventInfo(
         String direction,
@@ -25,6 +28,8 @@ public final class EventInfo {
         this.data = data;
         this.destinationAddress = destinationAddress;
         this.sourceAddress = sourceAddress;
+        this.isValid = true;
+        this.errorMessage = "";
     }
 
     public EventInfo(
@@ -40,10 +45,36 @@ public final class EventInfo {
         this.data = data;
         this.destinationAddress = destinationAddress;
         this.sourceAddress = sourceAddress;
+        this.isValid = true;
+        this.errorMessage = "";
+    }
+
+    public EventInfo(
+        String errorMessage
+    ) {
+        this.isValid = false;
+        this.errorMessage = errorMessage;
+        this.direction = "";
+        this.eventType = "";
+        this.timestamp = null;
+        this.data = null;
+        this.destinationAddress = "";
+        this.sourceAddress = "";
+    }
+
+    public long getTimeDifference(EventInfo other) {
+        if (!this.isValid || !other.isValid) {
+            System.err.println("At least one of the EventInfo-Objects is not valid and does not contain a timestamp.");
+        }
+        long difference = ChronoUnit.MILLIS.between(this.timestamp, other.timestamp);
+        return Math.abs(difference);
     }
 
     @Override
     public String toString() {
+        if (!this.isValid) {
+            return "ERROR: Busdata not valid: " + this.errorMessage;
+        }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(String.format("%-29s", this.timestamp.toString()));
         stringBuilder.append(" : ");

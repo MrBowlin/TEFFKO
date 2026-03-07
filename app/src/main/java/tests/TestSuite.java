@@ -1,4 +1,4 @@
-package framework;
+package tests;
 
 import java.util.ArrayList;
 

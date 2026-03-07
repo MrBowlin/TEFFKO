@@ -1,11 +1,10 @@
 package examples;
 
-import framework.TestRunner;
+import tests.TestRunner;
 
 public class Main {
-    
-        public static void main(String[] args) {
+    public static void main(String[] args) {
         TestRunner testRunner = new TestRunner();
-        testRunner.run(new ExampleKnxTest());
+        testRunner.run(new ExampleTest());
     }
 }

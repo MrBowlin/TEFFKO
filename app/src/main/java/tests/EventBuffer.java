@@ -1,4 +1,4 @@
-package framework;
+package tests;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,12 @@ public class EventBuffer extends ArrayList<EventInfo>{
     public void print(String functionName) {
         EventInfo.printTemplate(functionName);
         for (EventInfo event : this) {
-            System.out.println(event.toString());
+            if (event.direction.equals("INCOMING")) {
+                System.out.print(AnsiFormatting.ANSI_BLUE);
+            } else if (event.direction.equals("OUTGOING")) {
+                System.out.print(AnsiFormatting.ANSI_GRAY);
+            }
+            System.out.println(event.toString() + AnsiFormatting.ANSI_RESET);
         }
     }
 

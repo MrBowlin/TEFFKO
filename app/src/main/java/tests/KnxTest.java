@@ -1,4 +1,4 @@
-package framework;
+package tests;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface KnxTest {
+public @interface KnxTest{
     public String remoteHost() default "169.254.30.15";
     public boolean busMonitor() default false;
 }
