@@ -1,4 +1,4 @@
-package tests;
+package framework;
 
 public class TestRunner {
     public void run(Test test) {

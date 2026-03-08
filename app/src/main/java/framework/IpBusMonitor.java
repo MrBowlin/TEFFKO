@@ -1,10 +1,10 @@
-package tests;
+package framework;
 
 import io.calimero.DetachEvent;
 import io.calimero.process.ProcessEvent;
 import io.calimero.process.ProcessListener;
 
-public class BusMonitor implements ProcessListener {
+public class IpBusMonitor implements ProcessListener {
     final private EventBuffer responseBuffer = new EventBuffer();
 
     public void clearBuffer() {

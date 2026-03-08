@@ -1,4 +1,4 @@
-package tests;
+package framework;
 
 public class AnsiFormatting {
     public static final String ANSI_RESET       = "\u001B[0m";

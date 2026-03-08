@@ -1,7 +1,7 @@
 package examples;
 
-import tests.TestRunner;
-import tests.TestSuite;
+import framework.TestRunner;
+import framework.TestSuite;
 
 public class Main {
     public static void main(String[] args) {

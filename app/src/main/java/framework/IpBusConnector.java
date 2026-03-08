@@ -1,20 +1,17 @@
-package tests;
+package framework;
 
 import java.net.InetSocketAddress;
 
 import io.calimero.KNXException;
-import io.calimero.dptxlator.DPT;
-import io.calimero.dptxlator.DPTXlator;
-import io.calimero.dptxlator.TranslatorTypes;
 import io.calimero.link.KNXNetworkLink;
 import io.calimero.link.KNXNetworkLinkIP;
 import io.calimero.link.medium.TPSettings;
 import io.calimero.process.ProcessCommunicator;
 import io.calimero.process.ProcessCommunicatorImpl;
 
-public class BusConnector {
+public class IpBusConnector implements BusConnector {
 
-    private BusMonitor monitor;
+    private IpBusMonitor monitor;
     private KNXNetworkLink knxLink;
     private ProcessCommunicator pc;
     private boolean monitorActive;
@@ -24,47 +21,27 @@ public class BusConnector {
     final private TPSettings tpSettings;
     private String tunnelingAddress;
 
-    public BusConnector(String remoteHost) {
+    public IpBusConnector(String remoteHost) {
         this.anyLocal = new InetSocketAddress(0);
         this.remote = new InetSocketAddress(remoteHost, 3671);
         this.tpSettings = new TPSettings();
         monitorActive = false;
     }
 
-    public byte[] stringToBytes(String value, DPT dataPointType) {
-        try {
-            DPTXlator translator = TranslatorTypes.createTranslator(dataPointType);
-            translator.setValue(value);
-            return translator.getData();
-        } catch (KNXException e) {
-            System.err.println(e.getMessage());
-            return new byte[]{};
-        }
-    }
-
-    public String bytesToString(byte[] data, DPT dataPointType) {
-        try {
-            DPTXlator translator = TranslatorTypes.createTranslator(dataPointType);
-            translator.setData(data);
-            return translator.getValue();
-        } catch (KNXException e) {
-            System.err.println(e.getMessage());
-            return "";
-        }
-    }
-
+    @Override
     public void openConnection() {
         try {
             this.knxLink = KNXNetworkLinkIP.newTunnelingLink(this.anyLocal, this.remote, false, this.tpSettings);
             this.tunnelingAddress = this.knxLink.getKNXMedium().assignedAddress().get().toString();
             this.pc = new ProcessCommunicatorImpl(this.knxLink);
-            this.monitor = new BusMonitor();
+            this.monitor = new IpBusMonitor();
             monitorActive = true;
         } catch (KNXException | InterruptedException e) {
             System.err.println("Error accessing KNX datapoint: " + e.getMessage());
         }
     }
 
+    @Override
     public void closeConnection() {
         try {
             this.pc.close();
@@ -76,6 +53,7 @@ public class BusConnector {
         }
     }
 
+    @Override
     public EventBuffer getMonitorBuffer() {
         if (this.monitor != null) {
             return monitor.getBuffer();
@@ -85,6 +63,7 @@ public class BusConnector {
         }
     }
 
+    @Override
     public void startMonitor() {
         if (this.pc != null && this.monitor != null) {
             try {
@@ -100,6 +79,7 @@ public class BusConnector {
         }
     }
 
+    @Override
     public void stopMonitor() {
         if (this.pc != null && this.monitor != null) {
             this.pc.removeProcessListener(this.monitor);
@@ -109,11 +89,12 @@ public class BusConnector {
         }
     }
 
+    @Override
     public EventInfo awaitMessage(ComObject communicationObject, long timeout) {
         if (this.pc == null) {
             return new EventInfo("Error while waiting for message: BusConnector not initialized correctly, ProcessCommunicator was null!");
         }
-        BusListener listener = new BusListener();
+        IpBusListener listener = new IpBusListener();
         this.pc.addProcessListener(listener);
         try {
             EventInfo event = listener.awaitMessage(communicationObject.getAddress(), timeout);
@@ -125,6 +106,7 @@ public class BusConnector {
         } 
     }
 
+    @Override
     public EventInfo writeMessage(ComObject communicationObject, String value) {
         if (this.pc == null) {
             return new EventInfo("Error while trying to write onto bus: BusConnector not initialized correctly, ProcessCommunicator was null!");
@@ -135,7 +117,7 @@ public class BusConnector {
                 "WRITE.INDICATION", 
                 this.tunnelingAddress, 
                 communicationObject.getAddress().toString(), 
-                stringToBytes(value, communicationObject.getDPT())
+                ComObject.stringToBytes(value, communicationObject.getDPT())
             );
             this.pc.write(communicationObject.getDatapoint(), value);
             if (event.isValid && monitorActive && monitor != null) {
@@ -147,7 +129,8 @@ public class BusConnector {
         }
     }
 
-    public EventInfo readRequest(ComObject communicationObject) {
+    @Override
+    public EventInfo requestMessage(ComObject communicationObject) {
         if (this.pc == null) {
             return new EventInfo("Error while trying to read from bus: BusConnector not initialized correctly, ProcessCommunicator was null!");
         }
@@ -168,7 +151,7 @@ public class BusConnector {
                 "READ.RESPONSE", 
                 "", 
                 communicationObject.getAddress().toString(), 
-                stringToBytes(value, communicationObject.getDPT())
+                ComObject.stringToBytes(value, communicationObject.getDPT())
             );
         } catch(KNXException | InterruptedException e) {
             return new EventInfo("Error while trying to read from bus: " + e.getMessage());

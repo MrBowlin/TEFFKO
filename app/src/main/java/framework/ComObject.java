@@ -1,10 +1,12 @@
-package tests;
+package framework;
 
 import io.calimero.GroupAddress;
 import io.calimero.KNXException;
 import io.calimero.datapoint.Datapoint;
 import io.calimero.datapoint.StateDP;
 import io.calimero.dptxlator.DPT;
+import io.calimero.dptxlator.DPTXlator;
+import io.calimero.dptxlator.TranslatorTypes;
 
 public class ComObject {
     private DPT dataPointType;
@@ -34,5 +36,27 @@ public class ComObject {
 
     public Datapoint getDatapoint() {
         return this.dataPoint;
+    }
+
+    public static byte[] stringToBytes(String value, DPT dataPointType) {
+        try {
+            DPTXlator translator = TranslatorTypes.createTranslator(dataPointType);
+            translator.setValue(value);
+            return translator.getData();
+        } catch (KNXException e) {
+            System.err.println(e.getMessage());
+            return new byte[]{};
+        }
+    }
+
+    public static String bytesToString(byte[] data, DPT dataPointType) {
+        try {
+            DPTXlator translator = TranslatorTypes.createTranslator(dataPointType);
+            translator.setData(data);
+            return translator.getValue();
+        } catch (KNXException e) {
+            System.err.println(e.getMessage());
+            return "";
+        }
     }
 }

@@ -1,11 +1,11 @@
-package tests;
+package framework;
 
 import io.calimero.DetachEvent;
 import io.calimero.GroupAddress;
 import io.calimero.process.ProcessEvent;
 import io.calimero.process.ProcessListener;
 
-public class BusListener implements ProcessListener {
+public class IpBusListener implements ProcessListener {
 
     private EventInfo event;
 
