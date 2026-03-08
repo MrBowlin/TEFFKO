@@ -33,4 +33,21 @@ public class ExampleTest extends KnxTestCase {
         long timeDifference = sendEvent.getTimeDifference(event);
         assertSmaller(500, timeDifference);
     }
+
+    @UnitTest
+    @KnxTest(busMonitor=true)
+    public void testReadRequest() {
+        ComObject eingang1 = new ComObject("0/0/3", DPTXlatorBoolean.DPT_SWITCH);
+        ComObject eingang2 = new ComObject("0/0/4", DPTXlatorBoolean.DPT_SWITCH);
+        ComObject ausgang = new ComObject("0/0/5", DPTXlatorBoolean.DPT_SWITCH);
+
+        knx.writeMessage(eingang1, "off");
+        knx.writeMessage(eingang2, "off");
+
+        EventInfo event = knx.readRequest(ausgang);
+        byte[] expected = knx.stringToBytes("off", DPTXlatorBoolean.DPT_SWITCH);
+        if (assertTrue(event.isValid)) {
+            assertEquals(expected, event.data);
+        }
+    }
 }

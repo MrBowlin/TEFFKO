@@ -10,7 +10,7 @@ public class TestRunner {
     }
 
     private void printResult(TestResult testResult, long time) {
-        System.out.println(AnsiFormatting.ANSI_BOLD + "================== Start of Test =====================" + AnsiFormatting.ANSI_RESET);
+        System.out.println(AnsiFormatting.ANSI_BOLD + "=============== Start of Evaluation ==================" + AnsiFormatting.ANSI_RESET);
         if (testResult.errorCount() > 0) {
             System.out.println(AnsiFormatting.ANSI_RED + "Errors:");
             for (String error : testResult.errorList) {
@@ -34,6 +34,6 @@ public class TestRunner {
         if (testResult.failureCount() > 0) System.out.print(AnsiFormatting.ANSI_YELLOW + AnsiFormatting.ANSI_BOLD);
         System.out.println(String.format("%-25s %s", "Failed Tests: ", testResult.failureCount()) + AnsiFormatting.ANSI_RESET);
         System.out.println(AnsiFormatting.ANSI_GRAY + "Total amount of time passed: " + (time) + "ms." + AnsiFormatting.ANSI_RESET);
-        System.out.println(AnsiFormatting.ANSI_BOLD + "================== End of Test =======================" + AnsiFormatting.ANSI_RESET);
+        System.out.println(AnsiFormatting.ANSI_BOLD + "================ End of Evaluation ===================" + AnsiFormatting.ANSI_RESET);
     }
 }

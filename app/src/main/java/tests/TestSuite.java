@@ -2,8 +2,8 @@ package tests;
 
 import java.util.ArrayList;
 
-public abstract class TestSuite implements Test {
-    ArrayList<Test> testList;
+public class TestSuite implements Test {
+    ArrayList<Test> testList = new ArrayList<>();
 
     @Override
     public void run(TestResult result) {

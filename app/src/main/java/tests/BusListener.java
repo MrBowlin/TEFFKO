@@ -13,11 +13,11 @@ public class BusListener implements ProcessListener {
         event = null;
         long startTime = System.currentTimeMillis();
         long currentTime = startTime;
-        while (timeout > currentTime - startTime || event == null) {
+        while (timeout > currentTime - startTime && (event == null || event.destinationAddress.equals(address.toString()))) {
             Thread.sleep(500);
             currentTime = System.currentTimeMillis();
         }
-        if (event != null) {
+        if (event != null && event.destinationAddress.equals(address.toString())) {
             return this.event;
         } else {
             return new EventInfo("Timout of " + timeout + " reached, no message received for GroupAddress " + address.toString());
@@ -27,32 +27,35 @@ public class BusListener implements ProcessListener {
     @Override
 	public void groupWrite(final ProcessEvent e) { 
         event = new EventInfo(
-        "INCOMING",
-        "WRITE.INDICATION",
-        e.getSourceAddr().toString(),
-        e.getDestination().toString(),
-        e.getASDU()
-    ); }
+            "INCOMING",
+            "WRITE.INDICATION",
+            e.getSourceAddr().toString(),
+            e.getDestination().toString(),
+            e.getASDU()
+        ); 
+    }
 
 	@Override
 	public void groupReadRequest(final ProcessEvent e) { 
         event = new EventInfo(
-        "INCOMING",
-        "READ.REQUEST",
-        e.getSourceAddr().toString(),
-        e.getDestination().toString(),
-        e.getASDU()
-    ); }
+            "INCOMING",
+            "READ.REQUEST",
+            e.getSourceAddr().toString(),
+            e.getDestination().toString(),
+            e.getASDU()
+        ); 
+    }
 
 	@Override
 	public void groupReadResponse(final ProcessEvent e) { 
         event = new EventInfo(
-        "INCOMING",
-        "READ.RESPONSE",
-        e.getSourceAddr().toString(),
-        e.getDestination().toString(),
-        e.getASDU()
-    ); }
+            "INCOMING",
+            "READ.RESPONSE",
+            e.getSourceAddr().toString(),
+            e.getDestination().toString(),
+            e.getASDU()
+        ); 
+    }
 
     @Override
 	public void detached(final DetachEvent e) {}

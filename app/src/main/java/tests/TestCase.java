@@ -1,5 +1,6 @@
 package tests;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public abstract class TestCase implements Test, TestFixture {
@@ -15,9 +16,10 @@ public abstract class TestCase implements Test, TestFixture {
                     setUp(method);
                     lastMethodCalled = method.getName();
                     method.invoke(this);
-                    tearDown(method);
-                } catch (Exception e) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     testResult.addFailure(e.getMessage(), method.getName());
+                } finally {
+                    tearDown(method);
                 }
             }
         }
@@ -41,7 +43,7 @@ public abstract class TestCase implements Test, TestFixture {
         }
     }
 
-    protected void assertTrue(boolean condition, String message) {
+    protected boolean assertTrue(boolean condition, String message) {
         try {
             if (condition) {
                 testResult.addSuccess();
@@ -51,95 +53,114 @@ public abstract class TestCase implements Test, TestFixture {
         } catch (Exception i) {
             System.err.println("TestCase has not been initialized yet.");
         }
+        return condition;
     }
 
-    protected void assertTrue(boolean condition) {
-        assertTrue(condition, "Expected 'true' but got '" + condition + "' instead.");
+    protected boolean assertTrue(boolean condition) {
+        return assertTrue(condition, "Expected 'true' but got '" + condition + "' instead.");
     }
 
-    protected void assertFalse(boolean condition) {
-        assertTrue(!condition, "Expected 'false' but got '" + condition + "' instead.");
+    protected boolean assertFalse(boolean condition) {
+        return assertTrue(!condition, "Expected 'false' but got '" + condition + "' instead.");
     }
 
-    protected void assertEquals(boolean  expected, boolean actual) {
-        assertTrue(expected == actual, "Expected '" + expected + "' but got '" + actual + "' instead.");
+    protected boolean assertEquals(boolean  expected, boolean actual) {
+        return assertTrue(expected == actual, "Expected '" + expected + "' but got '" + actual + "' instead.");
     }
 
-    protected void assertEquals(String expected, String actual) {
-        assertTrue(expected.equals(actual), "Expected '" + expected + "' but got '" + actual + "' instead.");
+    protected boolean assertEquals(String expected, String actual) {
+        return assertTrue(expected.equals(actual), "Expected '" + expected + "' but got '" + actual + "' instead.");
     }
     
-    protected void assertEquals(byte[] expected, byte[] actual) {
-        for (int i=0; i<actual.length; i++) {
-            assertTrue(expected[i] == actual[i], "Expected " + expected[i] + " but got " + actual[i] + " instead in ByteArray at position " + i + ".");
+    protected boolean assertEquals(byte[] expected, byte[] actual) {
+        if (expected.length != actual.length) {
+            assertTrue(false, "Length of byte-Arrays differs!");
+        } else {
+            for (int i=0; i<actual.length; i++) {
+                if (expected[i] != actual[i]) 
+                    return assertTrue(false, "Expected " + expected[i] + " but got " + actual[i] + " instead in ByteArray at position " + i + ".");
+            }
         }
+        return assertTrue(true);
     }
 
-    protected void assertEquals(int expected, int actual) {
-        assertTrue(expected == actual, "Expected " + expected + " but got " + actual + " instead.");
+    protected boolean assertEquals(int expected, int actual) {
+        return assertTrue(expected == actual, "Expected " + expected + " but got " + actual + " instead.");
     }
 
-    protected void assertEquals(double expected, double actual) {
-        assertTrue(expected == actual, "Expected " + expected + " but got " + actual + " instead.");
+    protected boolean assertEquals(double expected, double actual) {
+        return assertTrue(expected == actual, "Expected " + expected + " but got " + actual + " instead.");
     }
     
-    protected void assertEquals(long expected, long actual) {
-        assertTrue(expected == actual, "Expected '" + expected + "' but got '" + actual + "' instead.");
+    protected boolean assertEquals(long expected, long actual) {
+        return assertTrue(expected == actual, "Expected '" + expected + "' but got '" + actual + "' instead.");
     }
 
-    protected void assertEquals(float expected, float actual) {
-        assertTrue(expected == actual, "Expected '" + expected + "' but got '" + actual + "' instead.");
+    protected boolean assertEquals(float expected, float actual) {
+        return assertTrue(expected == actual, "Expected '" + expected + "' but got '" + actual + "' instead.");
     }
 
-    protected void assertSmaller(int maximum, int actual) {
-        assertTrue(maximum > actual, "Value '" + actual + "' was bigger than '" + maximum + "'.");
+    protected boolean assertSmaller(int maximum, int actual) {
+        return assertTrue(maximum > actual, "Value '" + actual + "' was bigger than '" + maximum + "'.");
     }
 
-    protected void assertSmaller(double maximum, double actual) {
-        assertTrue(maximum > actual, "Value '" + actual + "' was bigger than '" + maximum + "'.");
+    protected boolean assertSmaller(double maximum, double actual) {
+        return assertTrue(maximum > actual, "Value '" + actual + "' was bigger than '" + maximum + "'.");
     }
 
-    protected void assertSmaller(long maximum, long actual) {
-        assertTrue(maximum > actual, "Value '" + actual + "' was bigger than '" + maximum + "'.");
+    protected boolean assertSmaller(long maximum, long actual) {
+        return assertTrue(maximum > actual, "Value '" + actual + "' was bigger than '" + maximum + "'.");
     }
 
-    protected void assertSmaller(float maximum, float actual) {
-        assertTrue(maximum > actual, "Value '" + actual + "' was bigger than '" + maximum + "'.");
+    protected boolean assertSmaller(float maximum, float actual) {
+        return assertTrue(maximum > actual, "Value '" + actual + "' was bigger than '" + maximum + "'.");
     }
 
-    protected void assertBigger(int minimum, int actual) {
-        assertTrue(minimum < actual, "Value '" + actual + "' was bigger than '" + minimum + "'.");
+    protected boolean assertBigger(int minimum, int actual) {
+        return assertTrue(minimum < actual, "Value '" + actual + "' was bigger than '" + minimum + "'.");
     }
 
-    protected void assertBigger(double minimum, double actual) {
-        assertTrue(minimum < actual, "Value '" + actual + "' was bigger than '" + minimum + "'.");
+    protected boolean assertBigger(double minimum, double actual) {
+        return assertTrue(minimum < actual, "Value '" + actual + "' was bigger than '" + minimum + "'.");
     }
 
-    protected void assertBigger(long minimum, long actual) {
-        assertTrue(minimum < actual, "Value '" + actual + "' was bigger than '" + minimum + "'.");
+    protected boolean assertBigger(long minimum, long actual) {
+        return assertTrue(minimum < actual, "Value '" + actual + "' was bigger than '" + minimum + "'.");
     }
 
-    protected void assertBigger(float minimum, float actual) {
-        assertTrue(minimum < actual, "Value '" + actual + "' was bigger than '" + minimum + "'.");
+    protected boolean assertBigger(float minimum, float actual) {
+        return assertTrue(minimum < actual, "Value '" + actual + "' was bigger than '" + minimum + "'.");
     }
 
-    protected void assertEquals(int expected, int actual, int tolerance) {
-        assertTrue(expected <= actual - tolerance, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        assertTrue(expected >= actual + tolerance, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
+    protected boolean assertEquals(int expected, int actual, int tolerance) {
+        boolean condition = expected <= actual - tolerance;
+        if (!condition) return assertTrue(false, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
+        condition = expected >= actual + tolerance;
+        if (!condition) return assertTrue(false, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
+        return assertTrue(true);
     }
 
-    protected void assertEquals(double expected, double actual, double tolerance) {
-        assertTrue(expected <= actual - tolerance, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        assertTrue(expected >= actual + tolerance, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
+    protected boolean assertEquals(double expected, double actual, double tolerance) {
+        boolean condition = expected <= actual - tolerance;
+        if (!condition) return assertTrue(false, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
+        condition = expected >= actual + tolerance;
+        if (!condition) return assertTrue(false, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
+        return assertTrue(true);
     }
 
-    protected void assertEquals(long expected, long actual, long tolerance) {
-        assertTrue(expected <= actual - tolerance, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        assertTrue(expected >= actual + tolerance, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
+    protected boolean assertEquals(long expected, long actual, long tolerance) {
+        boolean condition = expected <= actual - tolerance;
+        if (!condition) return assertTrue(false, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
+        condition = expected >= actual + tolerance;
+        if (!condition) return assertTrue(false, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
+        return assertTrue(true);
     }
 
-    protected void assertEquals(float expected, float actual, float tolerance) {
-        assertTrue(expected <= actual - tolerance, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        assertTrue(expected >= actual + tolerance, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
+    protected boolean assertEquals(float expected, float actual, float tolerance) {
+        boolean condition = expected <= actual - tolerance;
+        if (!condition) return assertTrue(false, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
+        condition = expected >= actual + tolerance;
+        if (!condition) return assertTrue(false, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
+        return assertTrue(true);
     }
 }
