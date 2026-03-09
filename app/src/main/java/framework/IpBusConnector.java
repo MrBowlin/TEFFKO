@@ -25,7 +25,7 @@ public class IpBusConnector implements BusConnector {
         this.anyLocal = new InetSocketAddress(0);
         this.remote = new InetSocketAddress(remoteHost, 3671);
         this.tpSettings = new TPSettings();
-        monitorActive = false;
+        this.monitorActive = false;
     }
 
     @Override
@@ -35,7 +35,6 @@ public class IpBusConnector implements BusConnector {
             this.tunnelingAddress = this.knxLink.getKNXMedium().assignedAddress().get().toString();
             this.pc = new ProcessCommunicatorImpl(this.knxLink);
             this.monitor = new IpBusMonitor();
-            monitorActive = true;
         } catch (KNXException | InterruptedException e) {
             System.err.println("Error accessing KNX datapoint: " + e.getMessage());
         }
@@ -46,7 +45,6 @@ public class IpBusConnector implements BusConnector {
         try {
             this.pc.close();
             this.knxLink.close();
-            monitorActive = false;
             Thread.sleep(500);
         } catch (InterruptedException e) {
             System.err.println("Error closing KNX datapoint: " + e.getMessage());
@@ -69,6 +67,7 @@ public class IpBusConnector implements BusConnector {
             try {
                 this.pc.addProcessListener(this.monitor);
                 this.monitor.clearBuffer();
+                this.monitorActive = true;
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                  System.err.println("Error starting KNX Listener: " + e.getMessage());
@@ -82,6 +81,7 @@ public class IpBusConnector implements BusConnector {
     @Override
     public void stopMonitor() {
         if (this.pc != null && this.monitor != null) {
+            this.monitorActive = false;
             this.pc.removeProcessListener(this.monitor);
         }
         else {
@@ -120,7 +120,7 @@ public class IpBusConnector implements BusConnector {
                 ComObject.stringToBytes(value, communicationObject.getDPT())
             );
             this.pc.write(communicationObject.getDatapoint(), value);
-            if (event.isValid && monitorActive && monitor != null) {
+            if (event.isValid && this.monitorActive && monitor != null) {
                 monitor.addToBuffer(event);
             }
             return event;
@@ -142,7 +142,7 @@ public class IpBusConnector implements BusConnector {
                 communicationObject.getAddress().toString(), 
                 new byte[]{}
             );
-            if (event.isValid && monitorActive && monitor != null) {
+            if (event.isValid && this.monitorActive && monitor != null) {
                 monitor.addToBuffer(event);
             }
             String value = this.pc.read(communicationObject.getDatapoint());

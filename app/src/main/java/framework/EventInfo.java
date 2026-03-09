@@ -54,12 +54,12 @@ public final class EventInfo {
     ) {
         this.isValid = false;
         this.errorMessage = errorMessage;
-        this.direction = "";
-        this.eventType = "";
+        this.direction = null;
+        this.eventType = null;
         this.timestamp = null;
         this.data = null;
-        this.destinationAddress = "";
-        this.sourceAddress = "";
+        this.destinationAddress = null;
+        this.sourceAddress = null;
     }
 
     public long getTimeDifference(EventInfo other) {

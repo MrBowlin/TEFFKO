@@ -24,14 +24,10 @@ public class AirConditionerTest extends KnxTestCase {
         knx.writeMessage(eingang, "0");
         knx.awaitMessage(ausgang, 500);
 
-        // Test 1: Temperatur bleibt unter 25, Antwort "off" erwartet.
-        request = knx.writeMessage(eingang, "20");
+        // Test 1: Temperatur bleibt unter 25, keine Antwort erwartet.
+        knx.writeMessage(eingang, "20");
         response = knx.awaitMessage(ausgang, 500);
-        expected = ComObject.stringToBytes("off", DPTXlatorBoolean.DPT_SWITCH);
-        if (assertTrue(response.isValid)) {
-            assertEquals(expected, response.data);
-            assertSmaller(500, request.getTimeDifference(response));
-        }
+        assertFalse(response.isValid);
 
         // Test 2: Temperatur steigt über 25, Antwort "on" erwartet.
         request = knx.writeMessage(eingang, "30");
@@ -42,14 +38,10 @@ public class AirConditionerTest extends KnxTestCase {
             assertSmaller(500, request.getTimeDifference(response));
         }
 
-        // Test 3: Temperatur bleibt über 25, Antwort "on" erwartet.
-        request = knx.writeMessage(eingang, "30");
+        // Test 3: Temperatur bleibt über 25, keine Antwort erwartet.
+        knx.writeMessage(eingang, "30");
         response = knx.awaitMessage(ausgang, 500);
-        expected = ComObject.stringToBytes("on", DPTXlatorBoolean.DPT_SWITCH);
-        if (assertTrue(response.isValid)) {
-            assertEquals(expected, response.data);
-            assertSmaller(500, request.getTimeDifference(response));
-        }
+        assertFalse(response.isValid);
 
         // Test 4: Temperatur sinkt unter 25, Antwort "off" erwartet.
         request = knx.writeMessage(eingang, "20");
