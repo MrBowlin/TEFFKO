@@ -85,11 +85,11 @@ public abstract class TestCase implements Test, TestFixture {
     }
 
     protected boolean assertEquals(int expected, int actual) {
-        return assertTrue(expected == actual, "Expected " + expected + " but got " + actual + " instead.");
+        return assertTrue(expected == actual, "Expected '" + expected + "' but got '" + actual + "' instead.");
     }
 
     protected boolean assertEquals(double expected, double actual) {
-        return assertTrue(expected == actual, "Expected " + expected + " but got " + actual + " instead.");
+        return assertTrue(expected == actual, "Expected '" + expected + "' but got '" + actual + "' instead.");
     }
     
     protected boolean assertEquals(long expected, long actual) {
@@ -133,34 +133,22 @@ public abstract class TestCase implements Test, TestFixture {
     }
 
     protected boolean assertEquals(int expected, int actual, int tolerance) {
-        boolean condition = expected <= actual - tolerance;
-        if (!condition) return assertTrue(false, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        condition = expected >= actual + tolerance;
-        if (!condition) return assertTrue(false, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        return assertTrue(true);
+        boolean condition = Math.abs(expected - actual) <= tolerance;
+        return assertTrue(condition, "Expected '" + expected + "' but got '" + actual + "' instead with tolerance of '" + tolerance + "'.");
     }
 
     protected boolean assertEquals(double expected, double actual, double tolerance) {
-        boolean condition = expected <= actual - tolerance;
-        if (!condition) return assertTrue(false, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        condition = expected >= actual + tolerance;
-        if (!condition) return assertTrue(false, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        return assertTrue(true);
+        boolean condition = Math.abs(expected - actual) <= tolerance;
+        return assertTrue(condition, "Expected '" + expected + "' but got '" + actual + "' instead with tolerance of '" + tolerance + "'.");
     }
 
     protected boolean assertEquals(long expected, long actual, long tolerance) {
-        boolean condition = expected <= actual - tolerance;
-        if (!condition) return assertTrue(false, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        condition = expected >= actual + tolerance;
-        if (!condition) return assertTrue(false, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        return assertTrue(true);
+        boolean condition = Math.abs(expected - actual) <= tolerance;
+        return assertTrue(condition, "Expected '" + expected + "' but got '" + actual + "' instead with tolerance of '" + tolerance + "'.");
     }
 
     protected boolean assertEquals(float expected, float actual, float tolerance) {
-        boolean condition = expected <= actual - tolerance;
-        if (!condition) return assertTrue(false, "Value '" + actual + "' was smaller than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        condition = expected >= actual + tolerance;
-        if (!condition) return assertTrue(false, "Value '" + actual + "' was bigger than '" + expected + "' with tolerance of '" + tolerance + "'.");
-        return assertTrue(true);
+        boolean condition = Math.abs(expected - actual) <= tolerance;
+        return assertTrue(condition, "Expected '" + expected + "' but got '" + actual + "' instead with tolerance of '" + tolerance + "'.");
     }
 }

@@ -38,6 +38,14 @@ public class ComObject {
         return this.dataPoint;
     }
 
+    public byte[] stringToBytes(String value) {
+        return ComObject.stringToBytes(value, dataPointType);
+    }
+
+    public String bytesToString(byte[] data) {
+        return ComObject.bytesToString(data, dataPointType);
+    }
+
     public static byte[] stringToBytes(String value, DPT dataPointType) {
         try {
             DPTXlator translator = TranslatorTypes.createTranslator(dataPointType);

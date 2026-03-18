@@ -20,14 +20,14 @@ public class ExampleTest extends KnxTestCase {
         knx.writeMessage(eingang2, "off");
 
         EventInfo event = knx.awaitMessage(ausgang, 1000);
-        String response = ComObject.bytesToString(event.data, DPTXlatorBoolean.DPT_SWITCH);
+        String response = ausgang.bytesToString(event.data);
         assertEquals("off", response);
 
         knx.writeMessage(eingang1, "on");
         EventInfo sendEvent = knx.writeMessage(eingang2, "on");
 
         event = knx.awaitMessage(ausgang, 1000);
-        response = ComObject.bytesToString(event.data, DPTXlatorBoolean.DPT_SWITCH);
+        response = ausgang.bytesToString(event.data);
         assertEquals("on", response);
 
         long timeDifference = sendEvent.getTimeDifference(event);
@@ -45,7 +45,7 @@ public class ExampleTest extends KnxTestCase {
         knx.writeMessage(eingang2, "off");
 
         EventInfo event = knx.requestMessage(ausgang);
-        byte[] expected = ComObject.stringToBytes("off", DPTXlatorBoolean.DPT_SWITCH);
+        byte[] expected = ausgang.stringToBytes("off");
         if (assertTrue(event.isValid)) {
             assertEquals(expected, event.data);
         }
